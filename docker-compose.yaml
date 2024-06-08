@@ -1,0 +1,17 @@
+services:
+  common:
+    container_name: common
+    build: ../common
+    image: common:1.0.0
+
+  callback:
+    depends_on:
+      - common
+    build: .
+    image: callback:1.0.0
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      feign.creator.url: http://creator:8001
+    command: --spring.profiles.active=dev

@@ -4,7 +4,6 @@ import com.unbe1iev.callback.integration.creator.CreatorFeignClient;
 import com.unbe1iev.callback.integration.creator.dto.SignInCreatorRequestDto;
 import com.unbe1iev.callback.mapper.ObjectToJsonMapper;
 import com.unbe1iev.callback.service.CallbackKeycloakService;
-import com.unbe1iev.common.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.events.Event;
@@ -27,7 +26,7 @@ public class CallbackKeycloakServiceImpl implements CallbackKeycloakService {
 
     @Override
     public void handleKeycloakEvent(Event event, String sharedSecret) {
-        log.info("Received event: {}",  objectToJsonMapper.map(event));
+        log.info("Received event: {}", objectToJsonMapper.map(event));
 
         if (sharedSecret == null || !sharedSecret.equals(configuredSharedSecretKey)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid shared secret");
@@ -41,9 +40,8 @@ public class CallbackKeycloakServiceImpl implements CallbackKeycloakService {
                             .email(event.getDetails().get("email"))
                             .firstName(event.getDetails().getOrDefault("first_name", null))
                             .lastName(event.getDetails().getOrDefault("last_name", null))
-                            .build(),
-                    SecurityUtil.getAuthorizationToken());
-            log.info("Creator registered successfully.");
+                            .build());
+            log.info("Sending to creator service...");
         }
     }
 }
